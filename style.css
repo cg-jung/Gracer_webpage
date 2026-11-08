@@ -1,0 +1,24 @@
+:root{--bg:#faf8f4;--fg:#232323;--muted:#666;--accent:#7a2e2e;--card:#fff;--line:#e5e0d6}
+@media(prefers-color-scheme:dark){:root{--bg:#171616;--fg:#eee;--muted:#aaa;--accent:#e0a0a0;--card:#222;--line:#333}}
+*{box-sizing:border-box}body{margin:0;font:17px/1.6 Georgia,serif;background:var(--bg);color:var(--fg)}
+a{color:var(--accent)}header{border-bottom:1px solid var(--line);padding:1rem}
+.bar{max-width:60rem;margin:auto;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:center;justify-content:space-between}
+.logo{font-size:1.4rem;font-weight:bold;text-decoration:none}nav a{margin-right:1rem;text-decoration:none}
+main{max-width:60rem;margin:auto;padding:1rem}.hero{padding:3rem 0;text-align:center}.hero h1{font-size:2.2rem;margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1rem}
+.video{aspect-ratio:16/9;width:100%;border:0;border-radius:8px}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(12rem,1fr));gap:.5rem}
+.photos img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;cursor:zoom-in}
+dialog{max-width:95vw;border:0;background:#000;padding:0}dialog img{max-width:95vw;max-height:85vh;display:block}
+dialog p{color:#fff;margin:.5rem;text-align:center}
+footer{text-align:center;color:var(--muted);padding:2rem 1rem;border-top:1px solid var(--line)}
+.todo{background:#fff3b0;color:#000;padding:0 .25rem}
+body{font-family:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif}
+small{font-size:.65em;color:var(--muted);font-weight:normal;margin-left:.3em}nav a small{display:block;margin:0;text-align:center;font-size:.7rem}
+nav a{display:inline-block;margin:0 .6rem 0 0}nav a[aria-current]{border-bottom:2px solid var(--accent)}
+.en{color:var(--muted);font-size:.92em}.big{font-size:1.6rem;font-weight:bold}.logo img{display:block;max-width:100%;height:auto}
+.tl{display:grid;grid-template-columns:8rem 1fr;gap:.4rem 1rem}.tl dt{font-weight:bold}.tl dd{margin:0}
+@media(max-width:600px){.tl{grid-template-columns:1fr}.tl dd{margin-bottom:.6rem}}
+.sched{width:100%;border-collapse:collapse}.sched th,.sched td{padding:1rem;border-bottom:1px solid var(--line);text-align:left}.sched td{font-size:1.4rem;text-align:right}
+blockquote{border-left:3px solid var(--accent);margin:1.5rem 0;padding-left:1rem}.map{width:100%;height:24rem;border:0;border-radius:8px;margin-top:1rem}
