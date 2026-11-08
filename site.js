@@ -7,11 +7,23 @@ if(player){loadJSON('config.json').then(c=>{
   f.title='Church YouTube channel';
   f.src='https://www.youtube-nocookie.com/embed/videoseries?list=UU'+c.youtubeChannelId.slice(2);
   player.replaceChildren(f)})}
-// Gallery: self-hosted photos listed in gallery/photos.json (see tools/make_manifest.py)
-const grid=document.getElementById('photos');
-if(grid){const lb=document.getElementById('lb');
-  loadJSON('gallery/photos.json').then(list=>{
-    if(!list.length)grid.textContent='Photos coming soon.';
-    for(const p of list){const i=document.createElement('img');i.src='gallery/photos/'+p.file;i.alt=p.caption||'';i.loading='lazy';
-      i.onclick=()=>{lb.querySelector('img').src=i.src;lb.querySelector('p').textContent=p.caption||'';lb.showModal()};grid.append(i)}});
-  lb.onclick=()=>lb.close()}
+// Gallery: albums listed in gallery/albums.json (run tools/make_manifest.py). Each album has its own link: gallery.html#<album-id>
+const aEl=document.getElementById('albums');
+if(aEl){let albums=[],cur=[],idx=0;const lb=document.getElementById('lb'),photos=document.getElementById('photos'),sec=document.getElementById('album'),msg=document.getElementById('msg');
+  const el=(t,p={},...k)=>{const e=document.createElement(t);Object.assign(e,p);e.append(...k);return e};
+  const show=i=>{idx=(i+cur.length)%cur.length;const p=cur[idx];lb.querySelector('img').src=p.src;lb.querySelector('img').alt=p.cap;lb.querySelector('p').textContent=p.cap;if(!lb.open)lb.showModal()};
+  function render(){const id=decodeURIComponent(location.hash.slice(1));const a=albums.find(x=>x.id===id);
+    sec.hidden=!a;aEl.hidden=!!a;msg.textContent='';
+    if(!a){document.title='갤러리 · 주은혜 교회';return}
+    document.title=a.title+' · 주은혜 교회';document.getElementById('atitle').textContent=a.title+(a.title_en?' · '+a.title_en:'');
+    cur=a.photos.map(p=>({src:'gallery/albums/'+a.id+'/'+p.file,cap:p.caption||a.title}));
+    photos.replaceChildren(...cur.map((p,i)=>{const im=el('img',{src:p.src,alt:p.cap,loading:'lazy'});im.onclick=()=>show(i);return im}));window.scrollTo(0,0)}
+  fetch('gallery/albums.json').then(r=>r.json()).then(list=>{albums=list;
+    if(list.length)aEl.replaceChildren(...list.map(a=>{const l=el('a',{href:'#'+a.id,className:'card album'},
+      el('img',{src:'gallery/albums/'+a.id+'/'+a.cover,alt:'',loading:'lazy'}),el('b',{},a.title),el('small',{},a.photos.length+' 장 · photos'+(a.date?' · '+a.date:'')));return l}));
+    render()});
+  addEventListener('hashchange',render);
+  document.getElementById('share').onclick=async()=>{const url=location.href,t=document.getElementById('atitle').textContent;
+    try{if(navigator.share){await navigator.share({title:t,url});return}await navigator.clipboard.writeText(url);msg.textContent='링크가 복사되었습니다 · Link copied'}catch(e){msg.textContent=url}};
+  document.getElementById('prev').onclick=()=>show(idx-1);document.getElementById('next').onclick=()=>show(idx+1);document.getElementById('close').onclick=()=>lb.close();
+  lb.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')show(idx-1);if(e.key==='ArrowRight')show(idx+1)})}
