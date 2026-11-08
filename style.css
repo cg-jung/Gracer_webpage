@@ -22,3 +22,7 @@ nav a{display:inline-block;margin:0 .6rem 0 0}nav a[aria-current]{border-bottom:
 @media(max-width:600px){.tl{grid-template-columns:1fr}.tl dd{margin-bottom:.6rem}}
 .sched{width:100%;border-collapse:collapse}.sched th,.sched td{padding:1rem;border-bottom:1px solid var(--line);text-align:left}.sched td{font-size:1.4rem;text-align:right}
 blockquote{border-left:3px solid var(--accent);margin:1.5rem 0;padding-left:1rem}.map{width:100%;height:24rem;border:0;border-radius:8px;margin-top:1rem}
+.albums{display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:1rem}.album{display:block;text-decoration:none;color:inherit;padding:.5rem}
+.album img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px}.album b{display:block;margin-top:.5rem}[hidden]{display:none!important}
+button{font:inherit;padding:.5rem 1rem;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);cursor:pointer}
+.lbnav{display:flex;justify-content:space-between;padding:.5rem}dialog img{margin:auto}
