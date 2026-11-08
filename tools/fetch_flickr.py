@@ -10,7 +10,7 @@ def api(key, **p):
     p.update(api_key=key, format="json", nojsoncallback=1)
     with urllib.request.urlopen("https://api.flickr.com/services/rest/?" + urllib.parse.urlencode(p), timeout=30) as r:
         d = json.load(r)
-    if d.get("stat") != "ok": raise RuntimeError(d.get("message", "Flickr error"))
+    if d.get("stat") != "ok": raise RuntimeError(f'Flickr error {d.get("code")}: {d.get("message")} (method {p.get("method")})')
     return d
 def fetch(key, call=api):
     albums = []
@@ -34,7 +34,8 @@ def main():
     key = os.environ.get("FLICKR_KEY", "").strip()
     if not key: print("FLICKR_KEY not set - skipping Flickr albums"); return
     try: remote = fetch(key)
-    except Exception as e: print("Flickr unavailable - skipping:", type(e).__name__); return   # never print the key/URL
+    except RuntimeError as e: print("Flickr unavailable - skipping:", e); return   # Flickr's own message; never includes the key
+    except Exception as e: print("Flickr unavailable - skipping:", type(e).__name__); return   # network errors: no URL printed (it contains the key)
     local = [a for a in json.loads(OUT.read_text()) if not a.get("remote")] if OUT.exists() else []
     allx = sorted(local + remote, key=lambda a: a["date"], reverse=True)
     OUT.write_text(json.dumps(allx, ensure_ascii=False, indent=1)); print(len(remote), "Flickr albums added")
