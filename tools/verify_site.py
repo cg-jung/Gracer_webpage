@@ -17,7 +17,7 @@ for p in sorted(root.rglob("*")):
     data = p.read_bytes()
     if ext in MAGIC:
         if not data.startswith(MAGIC[ext]): errs.append(f"{rel}: not a real {ext} image")
-        if b"<?" in data or b"<script" in data.lower(): errs.append(f"{rel}: code hidden inside image")
+        if re.search(rb"<\?php|<script|(?:<\?=|<%@)[ -~\s]{12}", data, re.I): errs.append(f"{rel}: code hidden inside image")
     elif ext in {".html", ".js", ".css"} and BAD.search(data): errs.append(f"{rel}: risky code pattern")
     if ext == ".html" and b"Content-Security-Policy" not in data: errs.append(f"{rel}: missing Content-Security-Policy")
 print("\n".join(errs) or "site OK"); sys.exit(bool(errs))
