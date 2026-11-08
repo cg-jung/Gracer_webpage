@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Build album list from gallery/albums folders
+        run: python3 tools/make_manifest.py
       - run: python3 tools/verify_site.py
       - name: Build publish folder (site files only)
         run: mkdir _site && cp -r *.html *.css *.js *.json CNAME img gallery _site/
