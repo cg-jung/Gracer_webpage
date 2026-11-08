@@ -25,3 +25,4 @@ blockquote{border-left:3px solid var(--accent);margin:1.5rem 0;padding-left:1rem
 .album img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px}.album b{display:block;margin-top:.5rem}[hidden]{display:none!important}
 button{font:inherit;padding:.5rem 1rem;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);cursor:pointer}
 .lbnav{display:flex;justify-content:space-between;padding:.5rem}dialog img{margin:auto}
+dialog a{color:#fff}
