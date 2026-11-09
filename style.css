@@ -35,3 +35,12 @@ nav{display:flex;flex-wrap:wrap;gap:.5rem 1rem}
 nav a{display:inline-flex;flex-direction:column;align-items:center;text-align:center;margin:0;line-height:1.35}
 nav a small{font-size:.9rem;margin:0;text-align:center}
 @media(max-width:700px){.bar{justify-content:center;text-align:center}nav{justify-content:center}.logo{display:block}.logo img{margin:0 auto}}
+/* services: larger left column */
+.sched th{font-size:1.5rem;line-height:1.3;font-weight:700}.sched th small{display:block;font-size:1.05rem;margin:.3rem 0 0}
+/* phone: compact recent albums on the home page */
+@media(max-width:600px){#recent{grid-template-columns:1fr;gap:.6rem}
+#recent .album{display:grid;grid-template-columns:96px 1fr;grid-template-rows:auto auto;column-gap:.8rem;align-items:center;padding:.5rem}
+#recent .album img{grid-row:1 / span 2;width:96px;height:72px}
+#recent .album b{margin:0;align-self:end;font-size:1rem}#recent .album small{margin:0;align-self:start}}
+.sched td{white-space:nowrap}
+@media(max-width:600px){.sched th,.sched td{padding:.9rem .4rem}.sched th{font-size:1.35rem}.sched th small{font-size:1rem}.sched td{font-size:1.2rem}}
