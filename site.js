@@ -1,3 +1,7 @@
+// Auto-refresh: if a newer version of the site was published, reload once so visitors never see a stale page.
+(function(){try{const sc=document.querySelector('script[src*="site.js"]'),m=sc&&/[?&]v=([0-9a-f]{8})/.exec(sc.src);if(!m)return;
+  fetch('version.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(!j||!/^[0-9a-f]{8}$/.test(j.v||'')||j.v===m[1])return;
+    const k='site-reloaded-'+j.v;if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1');location.reload()}).catch(()=>{})}catch(e){}})();
 // Watch page: embeds the channel's "uploads" playlist (channel ID UCxxx -> playlist UUxxx).
 // New videos appear automatically; no API key or server needed.
 async function loadJSON(p){const r=await fetch(p,{cache:'no-cache'});if(!r.ok)throw new Error(p+' '+r.status);return r.json()}

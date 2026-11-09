@@ -56,3 +56,4 @@ nav a small{font-size:.9rem;margin:0;text-align:center}
 @media(max-width:600px){.sched,.sched tbody,.sched tr,.sched th,.sched td{display:block;width:100%}
 .sched tr{padding:.9rem 0;border-bottom:1px solid var(--line)}
 .sched th,.sched td{border:0;padding:.1rem 0;text-align:left;font-size:1.3rem}.sched th small{font-size:1.3rem}.sched td{white-space:normal}}
+.en{font-size:1em}

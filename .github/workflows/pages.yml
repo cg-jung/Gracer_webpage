@@ -24,6 +24,8 @@ jobs:
         run: mkdir _site && cp -r *.html *.css *.js *.json CNAME img gallery _site/
       - name: Version CSS/JS links so browsers never use stale copies
         run: sed -i "s/href=\"style.css\"/href=\"style.css?v=${GITHUB_SHA::8}\"/; s/src=\"site.js\"/src=\"site.js?v=${GITHUB_SHA::8}\"/" _site/*.html
+      - name: Publish the version number (lets open pages notice a newer version)
+        run: echo "{\"v\":\"${GITHUB_SHA::8}\"}" > _site/version.json
       - uses: actions/upload-pages-artifact@v3
         with: { path: _site }
   deploy:
