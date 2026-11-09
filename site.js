@@ -1,6 +1,6 @@
 // Watch page: embeds the channel's "uploads" playlist (channel ID UCxxx -> playlist UUxxx).
 // New videos appear automatically; no API key or server needed.
-async function loadJSON(p){const r=await fetch(p);return r.json()}
+async function loadJSON(p){const r=await fetch(p,{cache:'no-cache'});if(!r.ok)throw new Error(p+' '+r.status);return r.json()}
 const player=document.getElementById('player');
 if(player){loadJSON('config.json').then(c=>{
   const f=document.createElement('iframe');f.className='video';f.allowFullscreen=true;f.loading='lazy';
@@ -20,7 +20,7 @@ if(aEl){let albums=[],cur=[],idx=0,shown=0;const PAGE=60,more=document.getElemen
     photos.replaceChildren();shown=0;addMore();window.scrollTo(0,0)}
   function addMore(){const n=Math.min(shown+PAGE,cur.length);photos.append(...cur.slice(shown,n).map((p,k)=>{const i=shown+k,im=el('img',{src:p.thumb,alt:p.cap,loading:'lazy'});im.onclick=()=>show(i);return im}));shown=n;more.hidden=shown>=cur.length;more.textContent='더 보기 · Show more ('+(cur.length-shown)+')'}
   more.onclick=addMore;
-  fetch('gallery/albums.json').then(r=>r.json()).then(list=>{albums=list;
+  loadJSON('gallery/albums.json').then(list=>{albums=list;
     if(list.length)aEl.replaceChildren(...list.map(a=>{const l=el('a',{href:'#'+a.id,className:'card album'},
       el('img',{src:a.remote?a.cover:'gallery/albums/'+a.id+'/'+a.cover,alt:'',loading:'lazy'}),el('b',{},a.title),el('small',{},a.photos.length+' 장 · photos'+(a.date?' · '+a.date:'')));return l}));
     render()});
