@@ -44,3 +44,8 @@ nav a small{font-size:.9rem;margin:0;text-align:center}
 #recent .album b{margin:0;align-self:end;font-size:1rem}#recent .album small{margin:0;align-self:start}}
 .sched td{white-space:nowrap}
 @media(max-width:600px){.sched th,.sched td{padding:.9rem .4rem}.sched th{font-size:1.35rem}.sched th small{font-size:1rem}.sched td{font-size:1.2rem}}
+/* consistent page-title size; larger service names */
+.hero h1{font-size:2.125rem}
+.sched th{font-size:1.9rem}.sched th small{font-size:1.15rem}
+@media(max-width:600px){.sched th{font-size:1.6rem}.sched th small{font-size:1.05rem}.sched td{font-size:1.2rem}}
+.sched th,.sched td{vertical-align:middle}
