@@ -2,11 +2,22 @@
 // New videos appear automatically; no API key or server needed.
 async function loadJSON(p){const r=await fetch(p,{cache:'no-cache'});if(!r.ok)throw new Error(p+' '+r.status);return r.json()}
 const player=document.getElementById('player');
-if(player){loadJSON('config.json').then(c=>{
+function playlistPlayer(){return loadJSON('config.json').then(c=>{
   const f=document.createElement('iframe');f.className='video';f.allowFullscreen=true;f.loading='lazy';
   f.title='Church YouTube channel';
   f.src='https://www.youtube-nocookie.com/embed/videoseries?list=UU'+c.youtubeChannelId.slice(2);
   player.replaceChildren(f)})}
+if(player){const n=parseInt(player.dataset.latest||'0',10);
+  if(n>0){loadJSON('sermons.json').then(list=>{
+    const top=list.filter(v=>/^[A-Za-z0-9_-]{11}$/.test(v.id)).slice(0,n);if(!top.length)throw new Error('empty');
+    player.className='vids';
+    player.replaceChildren(...top.map(v=>{const d=document.createElement('div');d.className='vid';
+      const f=document.createElement('iframe');f.className='video';f.allowFullscreen=true;f.loading='lazy';f.title=v.title||'Sermon video';
+      f.src='https://www.youtube-nocookie.com/embed/'+v.id;
+      const t=document.createElement('p');t.className='vtitle';t.textContent=v.title;
+      if(v.date){const s=document.createElement('small');s.textContent=v.date;t.append(' ',s)}
+      d.append(f,t);return d}))}).catch(playlistPlayer)}
+  else playlistPlayer()}
 // Gallery: albums listed in gallery/albums.json (run tools/make_manifest.py). Each album has its own link: gallery.html#<album-id>
 const aEl=document.getElementById('albums');
 if(aEl){let albums=[],cur=[],idx=0,shown=0;const PAGE=60,more=document.getElementById('more');const lb=document.getElementById('lb'),photos=document.getElementById('photos'),sec=document.getElementById('album'),msg=document.getElementById('msg');
