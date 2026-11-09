@@ -1,5 +1,7 @@
 # Website helper guide — 주은혜 교회 Lord's Grace Church
 
+(한국어 안내서: [HELPER_GUIDE_KO.md](HELPER_GUIDE_KO.md))
+
 For church members who help keep the website up to date. You can do everything below from a **phone browser** (turn on "Desktop site" if a button is missing) or a computer. No special software is needed.
 
 ## 0. How the site works (30 seconds)
