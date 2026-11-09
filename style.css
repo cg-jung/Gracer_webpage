@@ -30,3 +30,8 @@ dialog a{color:#fff}
 .block{margin:2.5rem 0}.block h2{margin-bottom:.8rem}.more{text-align:right;margin:.5rem 0}.btn{display:inline-block;margin-left:.5rem;padding:.4rem 1rem;border:1px solid var(--accent);border-radius:6px;text-decoration:none;font-size:1rem}.hero .big{margin-top:1.2rem}
 .lead{font-size:1.3rem;margin:.5rem 0}.welcome{max-width:44rem;margin:1rem auto 0}.welcome p{margin:1rem 0}.hero h1{font-size:2rem}
 body{word-break:keep-all;overflow-wrap:break-word}
+/* menu: centered items, larger grey English labels */
+nav{display:flex;flex-wrap:wrap;gap:.5rem 1rem}
+nav a{display:inline-flex;flex-direction:column;align-items:center;text-align:center;margin:0;line-height:1.35}
+nav a small{font-size:.9rem;margin:0;text-align:center}
+@media(max-width:700px){.bar{justify-content:center;text-align:center}nav{justify-content:center}.logo{display:block}.logo img{margin:0 auto}}
