@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '17 11 * * *'   # daily: pick up new Flickr albums
+    - cron: '17 2,5 * * 1'  # Sunday evening (US Pacific): pick up the new sermon
 permissions: { contents: read }
 jobs:
   verify:
@@ -16,6 +17,8 @@ jobs:
       - name: Add public Flickr albums (skipped if no key)
         env: { FLICKR_KEY: '${{ secrets.FLICKR_KEY }}' }
         run: python3 tools/fetch_flickr.py
+      - name: Latest sermon videos from YouTube (skipped on any problem)
+        run: python3 tools/fetch_youtube.py
       - run: python3 tools/verify_site.py
       - name: Build publish folder (site files only)
         run: mkdir _site && cp -r *.html *.css *.js *.json CNAME img gallery _site/

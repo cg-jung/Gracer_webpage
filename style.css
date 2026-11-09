@@ -49,3 +49,4 @@ nav a small{font-size:.9rem;margin:0;text-align:center}
 .sched th{font-size:1.9rem}.sched th small{font-size:1.15rem}
 @media(max-width:600px){.sched th{font-size:1.6rem}.sched th small{font-size:1.05rem}.sched td{font-size:1.2rem}}
 .sched th,.sched td{vertical-align:middle}
+.vids{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:1.5rem}.vtitle{margin:.5rem 0 0;font-weight:700}.vtitle small{font-weight:400}
