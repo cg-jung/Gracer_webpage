@@ -19,11 +19,15 @@ def fetch(key, call=api):
     for s in sets:
         photos, page = [], 1
         while True:
-            r = call(key, method="flickr.photosets.getPhotos", photoset_id=s["id"], user_id=UID, per_page=500, page=page, privacy_filter=1)["photoset"]
+            r = call(key, method="flickr.photosets.getPhotos", photoset_id=s["id"], user_id=UID, per_page=500, page=page, privacy_filter=1, extras="url_n,url_z,url_c,url_l,url_h")["photoset"]
             for ph in r["photo"]:
                 b = f'https://live.staticflickr.com/{ph["server"]}/{ph["id"]}_{ph["secret"]}'
-                if OK_URL.match(b + "_b.jpg"):
-                    photos.append({"url": b + "_b.jpg", "thumb": b + "_n.jpg", "caption": ph.get("title", ""),
+                ok = lambda u: u if u and OK_URL.match(u) else None       # only Flickr's image servers, plain .jpg
+                small = ok(ph.get("url_n")) or ok(b + "_n.jpg")                      # 320 px
+                med = ok(ph.get("url_z")) or ok(ph.get("url_c")) or small            # 640-800 px (sharp thumbnails)
+                big = ok(ph.get("url_h")) or ok(ph.get("url_l")) or ok(ph.get("url_c")) or ok(b + "_b.jpg") or med   # viewer
+                if big and med and small:
+                    photos.append({"url": big, "thumb": med, "thumb_small": small, "caption": ph.get("title", ""),
                                    "link": f"https://www.flickr.com/photos/{UID}/{ph['id']}/"})
             if page >= int(r["pages"]): break
             page += 1
@@ -31,7 +35,7 @@ def fetch(key, call=api):
         if not photos: continue
         d = datetime.datetime.fromtimestamp(int(s["date_create"]), datetime.timezone.utc).strftime("%Y-%m-%d")
         albums.append({"id": "flickr-" + s["id"], "title": s["title"]["_content"], "title_en": "", "date": d, "remote": True,
-                       "cover": photos[0]["thumb"], "link": f"https://www.flickr.com/photos/{UID}/albums/{s['id']}", "photos": photos})
+                       "cover": photos[0]["thumb"], "cover_small": photos[0]["thumb_small"], "link": f"https://www.flickr.com/photos/{UID}/albums/{s['id']}", "photos": photos})
     return albums
 def main():
     key = os.environ.get("FLICKR_KEY", "").strip()
