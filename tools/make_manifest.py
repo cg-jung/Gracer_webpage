@@ -6,6 +6,7 @@ import json, pathlib
 g = pathlib.Path(__file__).resolve().parent.parent / "gallery"
 EXT = {".jpg", ".jpeg", ".png", ".webp"}
 albums = []
+(g / "albums").mkdir(exist_ok=True)   # folder may be empty (all albums can come from Flickr)
 for d in sorted((g / "albums").iterdir()):
     if not d.is_dir(): continue
     meta = json.loads((d / "album.json").read_text()) if (d / "album.json").exists() else {}
