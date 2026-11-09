@@ -50,3 +50,9 @@ nav a small{font-size:.9rem;margin:0;text-align:center}
 @media(max-width:600px){.sched th{font-size:1.6rem}.sched th small{font-size:1.05rem}.sched td{font-size:1.2rem}}
 .sched th,.sched td{vertical-align:middle}
 .vids{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:1.5rem}.vtitle{margin:.5rem 0 0;font-weight:700}.vtitle small{font-weight:400}
+/* services: names, English labels and times all the same size */
+.sched th,.sched td,.sched th small{font-size:1.5rem}
+.sched th small{display:block;margin:.2rem 0 0;font-weight:400}.sched td{font-weight:400}
+@media(max-width:600px){.sched,.sched tbody,.sched tr,.sched th,.sched td{display:block;width:100%}
+.sched tr{padding:.9rem 0;border-bottom:1px solid var(--line)}
+.sched th,.sched td{border:0;padding:.1rem 0;text-align:left;font-size:1.3rem}.sched th small{font-size:1.3rem}.sched td{white-space:normal}}
