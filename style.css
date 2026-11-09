@@ -27,3 +27,4 @@ button{font:inherit;padding:.5rem 1rem;border:1px solid var(--line);border-radiu
 .lbnav{display:flex;justify-content:space-between;padding:.5rem}dialog img{margin:auto}
 dialog a{color:#fff}
 .center{text-align:center;margin:1.5rem 0}
+.block{margin:2.5rem 0}.block h2{margin-bottom:.8rem}.more{text-align:right;margin:.5rem 0}.btn{display:inline-block;margin-left:.5rem;padding:.4rem 1rem;border:1px solid var(--accent);border-radius:6px;text-decoration:none;font-size:1rem}.hero .big{margin-top:1.2rem}

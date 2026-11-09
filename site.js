@@ -29,3 +29,13 @@ if(aEl){let albums=[],cur=[],idx=0,shown=0;const PAGE=60,more=document.getElemen
     try{if(navigator.share){await navigator.share({title:t,url});return}await navigator.clipboard.writeText(url);msg.textContent='링크가 복사되었습니다 · Link copied'}catch(e){msg.textContent=url}};
   document.getElementById('prev').onclick=()=>show(idx-1);document.getElementById('next').onclick=()=>show(idx+1);document.getElementById('close').onclick=()=>lb.close();
   lb.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')show(idx-1);if(e.key==='ArrowRight')show(idx+1)})}
+
+// Home page: 3 newest albums
+const rec=document.getElementById('recent');
+if(rec){loadJSON('gallery/albums.json').then(list=>{
+  const top=[...list].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,3);
+  if(!top.length){rec.textContent='사진을 준비 중입니다. · Photos coming soon.';return}
+  rec.replaceChildren(...top.map(a=>{const l=document.createElement('a');l.href='gallery.html#'+encodeURIComponent(a.id);l.className='card album';
+    const i=document.createElement('img');i.src=a.remote?a.cover:'gallery/albums/'+a.id+'/'+a.cover;i.alt='';i.loading='lazy';
+    const t=document.createElement('b');t.textContent=a.title;const s=document.createElement('small');s.textContent=a.photos.length+' 장 · photos'+(a.date?' · '+a.date:'');
+    l.append(i,t,s);return l}))}).catch(()=>{rec.textContent='사진을 불러올 수 없습니다. · Could not load photos.'})}
