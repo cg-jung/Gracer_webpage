@@ -14,7 +14,9 @@ def api(key, **p):
     return d
 def fetch(key, call=api):
     albums = []
-    for s in call(key, method="flickr.photosets.getList", user_id=UID, per_page=500)["photosets"]["photoset"]:
+    sets = call(key, method="flickr.photosets.getList", user_id=UID, per_page=500)["photosets"]["photoset"]
+    print(f"Flickr lists {len(sets)} public album(s)")
+    for s in sets:
         photos, page = [], 1
         while True:
             r = call(key, method="flickr.photosets.getPhotos", photoset_id=s["id"], user_id=UID, per_page=500, page=page, privacy_filter=1)["photoset"]
@@ -25,6 +27,7 @@ def fetch(key, call=api):
                                    "link": f"https://www.flickr.com/photos/{UID}/{ph['id']}/"})
             if page >= int(r["pages"]): break
             page += 1
+        print(f'  album "{s["title"]["_content"]}" (Flickr says {s.get("photos", "?")} photos, {s.get("videos", 0)} videos): {len(photos)} public photo(s) loaded' + ("" if photos else " -> SKIPPED, no public photos"))
         if not photos: continue
         d = datetime.datetime.fromtimestamp(int(s["date_create"]), datetime.timezone.utc).strftime("%Y-%m-%d")
         albums.append({"id": "flickr-" + s["id"], "title": s["title"]["_content"], "title_en": "", "date": d, "remote": True,
