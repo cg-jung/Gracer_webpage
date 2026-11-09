@@ -9,7 +9,7 @@ if(player){loadJSON('config.json').then(c=>{
   player.replaceChildren(f)})}
 // Gallery: albums listed in gallery/albums.json (run tools/make_manifest.py). Each album has its own link: gallery.html#<album-id>
 const aEl=document.getElementById('albums');
-if(aEl){let albums=[],cur=[],idx=0;const lb=document.getElementById('lb'),photos=document.getElementById('photos'),sec=document.getElementById('album'),msg=document.getElementById('msg');
+if(aEl){let albums=[],cur=[],idx=0,shown=0;const PAGE=60,more=document.getElementById('more');const lb=document.getElementById('lb'),photos=document.getElementById('photos'),sec=document.getElementById('album'),msg=document.getElementById('msg');
   const el=(t,p={},...k)=>{const e=document.createElement(t);Object.assign(e,p);e.append(...k);return e};
   const show=i=>{idx=(i+cur.length)%cur.length;const p=cur[idx];lb.querySelector('img').src=p.src;lb.querySelector('img').alt=p.cap;const q=lb.querySelector('p');q.textContent=p.cap;if(p.link)q.append(' · ',el('a',{href:p.link,target:'_blank',rel:'noopener noreferrer'},'Flickr'));if(!lb.open)lb.showModal()};
   function render(){const id=decodeURIComponent(location.hash.slice(1));const a=albums.find(x=>x.id===id);
@@ -17,7 +17,9 @@ if(aEl){let albums=[],cur=[],idx=0;const lb=document.getElementById('lb'),photos
     if(!a){document.title='갤러리 · 주은혜 교회';return}
     document.title=a.title+' · 주은혜 교회';document.getElementById('atitle').textContent=a.title+(a.title_en?' · '+a.title_en:'');
     cur=a.photos.map(p=>{const c=p.caption||a.title;if(a.remote)return{src:p.url,thumb:p.thumb,link:p.link,cap:c};const u='gallery/albums/'+a.id+'/'+p.file;return{src:u,thumb:u,cap:c}});const fl=document.getElementById('flink');fl.hidden=!a.link;if(a.link)fl.href=a.link;
-    photos.replaceChildren(...cur.map((p,i)=>{const im=el('img',{src:p.thumb,alt:p.cap,loading:'lazy'});im.onclick=()=>show(i);return im}));window.scrollTo(0,0)}
+    photos.replaceChildren();shown=0;addMore();window.scrollTo(0,0)}
+  function addMore(){const n=Math.min(shown+PAGE,cur.length);photos.append(...cur.slice(shown,n).map((p,k)=>{const i=shown+k,im=el('img',{src:p.thumb,alt:p.cap,loading:'lazy'});im.onclick=()=>show(i);return im}));shown=n;more.hidden=shown>=cur.length;more.textContent='더 보기 · Show more ('+(cur.length-shown)+')'}
+  more.onclick=addMore;
   fetch('gallery/albums.json').then(r=>r.json()).then(list=>{albums=list;
     if(list.length)aEl.replaceChildren(...list.map(a=>{const l=el('a',{href:'#'+a.id,className:'card album'},
       el('img',{src:a.remote?a.cover:'gallery/albums/'+a.id+'/'+a.cover,alt:'',loading:'lazy'}),el('b',{},a.title),el('small',{},a.photos.length+' 장 · photos'+(a.date?' · '+a.date:'')));return l}));

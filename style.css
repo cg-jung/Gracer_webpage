@@ -26,3 +26,4 @@ blockquote{border-left:3px solid var(--accent);margin:1.5rem 0;padding-left:1rem
 button{font:inherit;padding:.5rem 1rem;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);cursor:pointer}
 .lbnav{display:flex;justify-content:space-between;padding:.5rem}dialog img{margin:auto}
 dialog a{color:#fff}
+.center{text-align:center;margin:1.5rem 0}
