@@ -4,9 +4,9 @@ on:
   pull_request:
   workflow_dispatch:
   schedule:
-    - cron: '17 11 * * *'   # daily: pick up new Flickr albums
-    - cron: '17 2,5 * * 1'  # Sunday evening (US Pacific): pick up the new sermon
+    - cron: '17 * * * *'    # hourly: pick up new sermons and Flickr albums
 permissions: { contents: read }
+concurrency: { group: pages, cancel-in-progress: false }   # never two deploys at once
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -17,7 +17,8 @@ jobs:
       - name: Add public Flickr albums (skipped if no key)
         env: { FLICKR_KEY: '${{ secrets.FLICKR_KEY }}' }
         run: python3 tools/fetch_flickr.py
-      - name: Latest sermon videos from YouTube (skipped on any problem)
+      - name: Latest sermon videos from YouTube (keeps the last good list if YouTube refuses)
+        env: { YOUTUBE_KEY: '${{ secrets.YOUTUBE_KEY }}' }
         run: python3 tools/fetch_youtube.py
       - run: python3 tools/verify_site.py
       - name: Build publish folder (site files only)
