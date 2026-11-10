@@ -39,9 +39,11 @@ def main():
     if key:
         try: vids = parse_api(fetch("https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=10&playlistId=UU" + cid[2:] + "&key=" + key), 6); source = "YouTube API"
         except Exception as e: print("YouTube API failed:", e)
-    if not vids:
-        try: vids = parse_feed(fetch("https://www.youtube.com/feeds/videos.xml?channel_id=" + cid)); source = "YouTube channel feed"
-        except Exception as e: print("YouTube feed failed:", e)
+    for label, url in (("YouTube channel feed", "https://www.youtube.com/feeds/videos.xml?channel_id=" + cid),
+                       ("YouTube uploads-playlist feed", "https://www.youtube.com/feeds/videos.xml?playlist_id=UU" + cid[2:])):
+        if vids: break
+        try: vids = parse_feed(fetch(url)); source = label
+        except Exception as e: print(label, "failed:", e)
     if not vids:
         try:
             dom = (ROOT / "CNAME").read_text().strip(); vids = clean(json.loads(fetch(f"https://{dom}/sermons.json", 2))); source = "list already published on the live site (kept)"
