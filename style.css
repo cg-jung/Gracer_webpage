@@ -75,3 +75,6 @@ nav a small{font-size:.9rem;margin:0;text-align:center}
 .pastor{display:flex;flex-direction:column;min-height:0}
 .pastor img{flex:1 1 0;height:0;min-height:0;object-fit:cover;object-position:50% 20%}}
 @media(max-width:700px){.pastor{max-width:9.5rem}}
+/* header lines up with the page content; on wide screens the menu spans the same width */
+.bar{max-width:58rem}
+@media(min-width:960px){nav{width:100%;justify-content:space-between;flex-wrap:nowrap;gap:.5rem}}
