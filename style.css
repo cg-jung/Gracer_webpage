@@ -58,3 +58,14 @@ nav a small{font-size:.9rem;margin:0;text-align:center}
 .sched th,.sched td{border:0;padding:.1rem 0;text-align:left;font-size:1.3rem}.sched th small{font-size:1.3rem}.sched td{white-space:normal}}
 .en{font-size:1em}
 .welcome{max-width:none;margin:1rem 0 0}
+/* home: group photo crossfade, pastor photo; about: portrait */
+.slides{position:relative;margin:0 0 1.5rem;aspect-ratio:16/9;overflow:hidden;border-radius:10px;background:#eee}
+.slides img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:fadeA 12s ease-in-out infinite}
+.slides img+img{animation-name:fadeB}
+@keyframes fadeA{0%,42%{opacity:1}50%,92%{opacity:0}100%{opacity:1}}
+@keyframes fadeB{0%,42%{opacity:0}50%,92%{opacity:1}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.slides img{animation:none}.slides img+img{opacity:0}}
+.withpastor{display:grid;grid-template-columns:15rem 1fr;gap:2rem;align-items:start}
+.pastor{margin:0;text-align:center}.pastor img{width:100%;height:auto;border-radius:10px;display:block}.pastor figcaption{margin-top:.5rem}
+.portrait{float:right;width:11rem;height:auto;border-radius:10px;margin:0 0 1rem 1.5rem}
+@media(max-width:700px){.withpastor{grid-template-columns:1fr;gap:1rem}.pastor{max-width:13rem;margin:0 auto}.portrait{width:8.5rem;margin-left:1rem}}
