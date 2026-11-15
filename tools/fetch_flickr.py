@@ -2,7 +2,7 @@
 """Add the church's PUBLIC Flickr albums to gallery/albums.json as remote albums (photos stay on Flickr; only titles and
 addresses are saved). Runs in GitHub Actions with the key in the FLICKR_KEY secret. Without a key or on any Flickr error it
 skips quietly so the deploy never breaks. Run tools/make_manifest.py first."""
-import datetime, json, os, pathlib, re, sys, urllib.parse, urllib.request
+import datetime, json, os, pathlib, re, sys, time, urllib.parse, urllib.request
 UID = "203228635@N02"
 OUT = pathlib.Path(__file__).resolve().parent.parent / "gallery" / "albums.json"
 OK_URL = re.compile(r"^https://live\.staticflickr\.com/\d+/\d+_[0-9a-f]+_[a-z]\.jpg$")   # only accept Flickr's image servers
@@ -37,13 +37,45 @@ def fetch(key, call=api):
         albums.append({"id": "flickr-" + s["id"], "title": s["title"]["_content"], "title_en": "", "date": d, "remote": True,
                        "cover": photos[0]["thumb"], "cover_small": photos[0]["thumb_small"], "link": f"https://www.flickr.com/photos/{UID}/albums/{s['id']}", "photos": photos})
     return albums
+LINK = re.compile(r"^https://www\.flickr\.com/photos/[\w@]+/(albums/)?\d+/?$")
+def clean_saved(items):
+    """Rebuild remote albums from a previously published albums.json, keeping only safe, well-formed entries."""
+    out = []
+    for a in items if isinstance(items, list) else []:
+        if not (isinstance(a, dict) and a.get("remote") and re.match(r"^flickr-\d+$", str(a.get("id", "")))): continue
+        photos = []
+        for ph in a.get("photos") if isinstance(a.get("photos"), list) else []:
+            if not isinstance(ph, dict): continue
+            u, t, ts, l = (str(ph.get(k, "")) for k in ("url", "thumb", "thumb_small", "link"))
+            ts = ts or t
+            if OK_URL.match(u) and OK_URL.match(t) and OK_URL.match(ts) and LINK.match(l):
+                photos.append({"url": u, "thumb": t, "thumb_small": ts, "caption": str(ph.get("caption", ""))[:300], "link": l})
+        link = str(a.get("link", ""))
+        if photos and LINK.match(link):
+            out.append({"id": a["id"], "title": str(a.get("title", ""))[:200], "title_en": "", "date": str(a.get("date", ""))[:10], "remote": True,
+                        "cover": photos[0]["thumb"], "cover_small": photos[0]["thumb_small"], "link": link, "photos": photos})
+    return out
+def last_good():
+    """The Flickr albums already published on the live site (so a Flickr outage never empties the gallery)."""
+    dom = (OUT.parent.parent / "CNAME").read_text().strip()
+    if not re.match(r"^[a-z0-9.-]+$", dom): raise ValueError("bad domain")
+    req = urllib.request.Request(f"https://{dom}/gallery/albums.json", headers={"User-Agent": "church-site-build"})
+    with urllib.request.urlopen(req, timeout=30) as r: return clean_saved(json.loads(r.read(5_000_000)))
 def main():
     key = os.environ.get("FLICKR_KEY", "").strip()
-    if not key: print("FLICKR_KEY not set - skipping Flickr albums"); return
-    try: remote = fetch(key)
-    except RuntimeError as e: print("Flickr unavailable - skipping:", e); return   # Flickr's own message; never includes the key
-    except Exception as e: print("Flickr unavailable - skipping:", type(e).__name__); return   # network errors: no URL printed (it contains the key)
+    remote, source, why = None, "", ""
+    if not key: why = "FLICKR_KEY not set"
+    else:
+        for attempt in range(3):
+            try: remote = fetch(key); source = "Flickr"; break
+            except RuntimeError as e: why = str(e)                    # Flickr's own message; never includes the key
+            except Exception as e: why = type(e).__name__             # network errors: no URL printed (it contains the key)
+            if attempt < 2: time.sleep(3 + 4 * attempt)
+    if remote is None:
+        print("Flickr unavailable:", why)
+        try: remote = last_good(); source = "albums already published on the live site (kept)"
+        except Exception as e: print("live-site copy failed:", type(e).__name__); remote = []; source = "none"
     local = [a for a in json.loads(OUT.read_text()) if not a.get("remote")] if OUT.exists() else []
     allx = sorted(local + remote, key=lambda a: a["date"], reverse=True)
-    OUT.write_text(json.dumps(allx, ensure_ascii=False, indent=1)); print(len(remote), "Flickr albums added")
+    OUT.write_text(json.dumps(allx, ensure_ascii=False, indent=1)); print(f"{len(remote)} Flickr albums added from: {source}")
 if __name__ == "__main__": main()
