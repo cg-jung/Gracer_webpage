@@ -69,3 +69,9 @@ nav a small{font-size:.9rem;margin:0;text-align:center}
 .pastor{margin:0;text-align:center}.pastor img{width:100%;height:auto;border-radius:10px;display:block}.pastor figcaption{margin-top:.5rem}
 .portrait{float:right;width:11rem;height:auto;border-radius:10px;margin:0 0 1rem 1.5rem}
 @media(max-width:700px){.withpastor{grid-template-columns:1fr;gap:1rem}.pastor{max-width:13rem;margin:0 auto}.portrait{width:8.5rem;margin-left:1rem}}
+/* home: pastor photo is smaller and ends level with the last line of the welcome text */
+@media(min-width:701px){.withpastor{grid-template-columns:11rem 1fr;align-items:stretch}
+.withpastor>div>p:first-child{margin-top:0}.withpastor>div>p:last-child{margin-bottom:0}
+.pastor{display:flex;flex-direction:column;min-height:0}
+.pastor img{flex:1 1 0;height:0;min-height:0;object-fit:cover;object-position:50% 20%}}
+@media(max-width:700px){.pastor{max-width:9.5rem}}
