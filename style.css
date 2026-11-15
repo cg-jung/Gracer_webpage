@@ -78,3 +78,5 @@ nav a small{font-size:.9rem;margin:0;text-align:center}
 /* header lines up with the page content; on wide screens the menu spans the same width */
 .bar{max-width:58rem}
 @media(min-width:960px){nav{width:100%;justify-content:space-between;flex-wrap:nowrap;gap:.5rem}}
+/* home: larger welcome block on computer screens */
+@media(min-width:701px){.hero{padding:2.2rem 0 1.8rem}.hero h1{font-size:3rem;line-height:1.2}.hero .lead{font-size:1.6rem}.hero .big{font-size:1.9rem;margin-top:1rem}}
