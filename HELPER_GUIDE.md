@@ -33,11 +33,11 @@ For church members who help keep the website up to date. You can do everything b
 ## 3. Add photos (albums)
 1. Upload the photos to the church's **Flickr** account into an album. Ask the admin who owns the Flickr account.
 2. Make sure the album's **photos are set to Public**. Only public photos appear on the website.
-3. The site checks Flickr **every day**, so the new album appears within a day. To show it right away: GitHub → **Actions** tab → **Verify and deploy** → **Run workflow** → **Run workflow**.
+3. The site checks Flickr **several times a day**, so the new album usually appears within a few hours. To show it right away: GitHub → **Actions** tab → **Verify and deploy** → **Run workflow** → **Run workflow**.
 4. Before making photos public, check you have permission, especially for children. To hide an album, set its photos back to private; it disappears at the next update.
 
 ## 4. Sermons
-Upload the video to the church YouTube channel. The Sermons page and the home page show the newest videos automatically (it may take some hours).
+Upload the video to the church YouTube channel. The Sermons page and the home page show the newest videos automatically (it may take some hours). If videos or albums ever stop updating for days, open GitHub → **Actions**: if it says the workflow is disabled, press **Enable workflow**, then **Run workflow**.
 
 ## 5. Did my change work? / Something looks wrong
 - GitHub → **Actions** tab. The top entry should have a **green check**.

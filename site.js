@@ -30,7 +30,7 @@ function coverImg(a){const i=document.createElement('img');i.alt='';i.loading='l
 if(aEl){let albums=[],cur=[],idx=0,shown=0;const PAGE=60,more=document.getElementById('more');const lb=document.getElementById('lb'),photos=document.getElementById('photos'),sec=document.getElementById('album'),msg=document.getElementById('msg');
   const el=(t,p={},...k)=>{const e=document.createElement(t);Object.assign(e,p);e.append(...k);return e};
   const show=i=>{idx=(i+cur.length)%cur.length;const p=cur[idx];lb.querySelector('img').src=p.src;lb.querySelector('img').alt=p.cap;const q=lb.querySelector('p');q.textContent=p.cap;if(p.link)q.append(' · ',el('a',{href:p.link,target:'_blank',rel:'noopener noreferrer'},'Flickr'));if(!lb.open)lb.showModal()};
-  function render(){const id=decodeURIComponent(location.hash.slice(1));const a=albums.find(x=>x.id===id);
+  function render(){let id=location.hash.slice(1);try{id=decodeURIComponent(id)}catch(e){}const a=albums.find(x=>x.id===id);
     sec.hidden=!a;aEl.hidden=!!a;msg.textContent='';
     if(!a){document.title='갤러리 · 주은혜 교회';return}
     document.title=a.title+' · 주은혜 교회';document.getElementById('atitle').textContent=a.title+(a.title_en?' · '+a.title_en:'');
@@ -38,10 +38,10 @@ if(aEl){let albums=[],cur=[],idx=0,shown=0;const PAGE=60,more=document.getElemen
     photos.replaceChildren();shown=0;addMore();window.scrollTo(0,0)}
   function addMore(){const n=Math.min(shown+PAGE,cur.length);photos.append(...cur.slice(shown,n).map((p,k)=>{const i=shown+k,im=el('img',{src:p.thumbSmall||p.thumb,alt:p.cap,loading:'lazy'});if(p.thumbSmall&&p.thumb!==p.thumbSmall){im.srcset=p.thumbSmall+' 320w, '+p.thumb+' 640w';im.sizes='(max-width:600px) 50vw, 240px'}im.onclick=()=>show(i);return im}));shown=n;more.hidden=shown>=cur.length;more.textContent='더 보기 · Show more ('+(cur.length-shown)+')'}
   more.onclick=addMore;
-  loadJSON('gallery/albums.json').then(list=>{albums=list;
-    if(list.length)aEl.replaceChildren(...list.map(a=>{const l=el('a',{href:'#'+a.id,className:'card album'},
+  loadJSON('gallery/albums.json').then(list=>{albums=list=(Array.isArray(list)?list:[]).filter(a=>a&&typeof a.id==='string'&&Array.isArray(a.photos)&&a.photos.length);
+    if(list.length)aEl.replaceChildren(...list.map(a=>{const l=el('a',{href:'#'+encodeURIComponent(a.id),className:'card album'},
       coverImg(a),el('b',{},a.title),el('small',{},a.photos.length+' 장 · photos'+(a.date?' · '+a.date:'')));return l}));
-    render()});
+    render()}).catch(()=>{aEl.textContent='사진을 불러올 수 없습니다. · Could not load photos.'});
   addEventListener('hashchange',render);
   document.getElementById('share').onclick=async()=>{const url=location.href,t=document.getElementById('atitle').textContent;
     try{if(navigator.share){await navigator.share({title:t,url});return}await navigator.clipboard.writeText(url);msg.textContent='링크가 복사되었습니다 · Link copied'}catch(e){msg.textContent=url}};
@@ -51,7 +51,7 @@ if(aEl){let albums=[],cur=[],idx=0,shown=0;const PAGE=60,more=document.getElemen
 // Home page: 3 newest albums
 const rec=document.getElementById('recent');
 if(rec){loadJSON('gallery/albums.json').then(list=>{
-  const top=[...list].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,3);
+  const top=(Array.isArray(list)?list:[]).filter(a=>a&&typeof a.id==='string'&&Array.isArray(a.photos)).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,3);
   if(!top.length){rec.textContent='사진을 준비 중입니다. · Photos coming soon.';return}
   rec.replaceChildren(...top.map(a=>{const l=document.createElement('a');l.href='gallery.html#'+encodeURIComponent(a.id);l.className='card album';
     const i=document.createElement('img');i.src=a.remote?(a.cover_small||a.cover):'gallery/albums/'+a.id+'/'+a.cover;i.alt='';i.loading='lazy';
