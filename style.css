@@ -80,3 +80,6 @@ nav a small{font-size:.9rem;margin:0;text-align:center}
 @media(min-width:960px){nav{width:100%;justify-content:space-between;flex-wrap:nowrap;gap:.5rem}}
 /* home: larger welcome block on computer screens */
 @media(min-width:701px){.hero{padding:2.2rem 0 1.8rem}.hero h1{font-size:3rem;line-height:1.2}.hero .lead{font-size:1.6rem}.hero .big{font-size:1.9rem;margin-top:1rem}}
+/* home: service time and its button share one centre line; button a little taller */
+.hero .big{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.6rem 1rem}
+.hero .big .btn{margin:0;padding:.6rem 1.2rem;font-size:1.05rem;line-height:1.2}
