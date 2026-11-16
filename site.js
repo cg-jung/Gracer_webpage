@@ -29,7 +29,9 @@ function coverImg(a){const i=document.createElement('img');i.alt='';i.loading='l
   i.src=a.cover_small||a.cover;if(a.cover_small&&a.cover!==a.cover_small){i.srcset=a.cover_small+' 320w, '+a.cover+' 640w';i.sizes='(max-width:600px) 100vw, 300px'}i.onerror=()=>{i.onerror=null;i.removeAttribute('srcset');i.src=a.cover_small||a.cover};return i}
 if(aEl){let albums=[],cur=[],idx=0,shown=0;const PAGE=60,more=document.getElementById('more');const lb=document.getElementById('lb'),photos=document.getElementById('photos'),sec=document.getElementById('album'),msg=document.getElementById('msg');
   const el=(t,p={},...k)=>{const e=document.createElement(t);Object.assign(e,p);e.append(...k);return e};
-  const show=i=>{idx=(i+cur.length)%cur.length;const p=cur[idx],im=lb.querySelector('img'),k=idx;im.alt=p.cap;im.onerror=()=>{im.onerror=null;if(p.thumbSmall&&idx===k)im.src=p.thumbSmall};im.src=p.thumb||p.src;if(p.src!==p.thumb){const big=new Image();big.onload=()=>{if(idx===k)im.src=p.src};big.src=p.src}const q=lb.querySelector('p');q.textContent=p.cap;if(p.link)q.append(' · ',el('a',{href:p.link,target:'_blank',rel:'noopener noreferrer'},'Flickr'));if(!lb.open){lb.showModal();history.pushState({viewer:1},'')}};
+  const fit=(w,h)=>{if(!w||!h)return;const im=lb.querySelector('img'),s=Math.min(innerWidth*.96/w,innerHeight*.72/h);im.style.width=Math.round(w*s)+'px';im.style.height=Math.round(h*s)+'px'};
+  addEventListener('resize',()=>{const im=lb.querySelector('img');if(lb.open)fit(im.naturalWidth,im.naturalHeight)});
+  const show=i=>{idx=(i+cur.length)%cur.length;const p=cur[idx],im=lb.querySelector('img'),k=idx,t=photos.children[idx];im.alt=p.cap;im.onerror=()=>{im.onerror=null;if(p.thumbSmall&&idx===k)im.src=p.thumbSmall};im.onload=()=>{if(idx===k)fit(im.naturalWidth,im.naturalHeight)};if(t&&t.naturalWidth)fit(t.naturalWidth,t.naturalHeight);im.src=(t&&t.naturalWidth&&t.currentSrc)||p.thumb||p.src;if(p.src!==p.thumb){const big=new Image();big.onload=()=>{if(idx===k)im.src=p.src};big.src=p.src}const q=lb.querySelector('p');q.textContent=p.cap;if(p.link)q.append(' · ',el('a',{href:p.link,target:'_blank',rel:'noopener noreferrer'},'Flickr'));if(!lb.open){lb.showModal();document.getElementById('next').focus({preventScroll:true});history.pushState({viewer:1},'')}};
   function render(){let id=location.hash.slice(1);try{id=decodeURIComponent(id)}catch(e){}const a=albums.find(x=>x.id===id);
     sec.hidden=!a;aEl.hidden=!!a;msg.textContent='';
     if(!a){document.title='갤러리 · 주은혜 교회';return}
@@ -46,7 +48,7 @@ if(aEl){let albums=[],cur=[],idx=0,shown=0;const PAGE=60,more=document.getElemen
   document.getElementById('share').onclick=async()=>{const url=location.href,t=document.getElementById('atitle').textContent;
     try{if(navigator.share){await navigator.share({title:t,url});return}await navigator.clipboard.writeText(url);msg.textContent='링크가 복사되었습니다 · Link copied'}catch(e){msg.textContent=url}};
   document.getElementById('prev').onclick=()=>show(idx-1);document.getElementById('next').onclick=()=>show(idx+1);document.getElementById('close').onclick=()=>lb.close();
-  lb.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')show(idx-1);if(e.key==='ArrowRight')show(idx+1)});
+  document.addEventListener('keydown',e=>{if(!lb.open)return;if(e.key==='ArrowLeft'){e.preventDefault();show(idx-1)}if(e.key==='ArrowRight'){e.preventDefault();show(idx+1)}});
   // close the photo viewer by tapping outside the photo, with the phone's Back button, or when the page changes
   lb.addEventListener('click',e=>{if(e.target===lb)lb.close()});
   lb.addEventListener('close',()=>{if(history.state&&history.state.viewer)history.back()});
