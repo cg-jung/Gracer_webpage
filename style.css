@@ -83,3 +83,7 @@ nav a small{font-size:.9rem;margin:0;text-align:center}
 /* home: service time and its button share one centre line; button a little taller */
 .hero .big{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.6rem 1rem}
 .hero .big .btn{margin:0;padding:.6rem 1.2rem;font-size:1.05rem;line-height:1.2}
+/* gallery: two photos per row on phones; viewer centred on a dark backdrop and always fits the screen */
+@media(max-width:600px){.photos{grid-template-columns:repeat(2,1fr);gap:.4rem}}
+dialog#lb{max-width:96vw;max-height:96vh;border-radius:8px;overflow:hidden}dialog#lb::backdrop{background:rgba(0,0,0,.85)}
+dialog#lb img{max-width:96vw;max-height:72vh;width:auto;height:auto;object-fit:contain;background:#000}

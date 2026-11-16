@@ -26,17 +26,17 @@ if(player){const n=parseInt(player.dataset.latest||'0',10);
 const aEl=document.getElementById('albums');
 function coverImg(a){const i=document.createElement('img');i.alt='';i.loading='lazy';
   if(!a.remote){i.src='gallery/albums/'+a.id+'/'+a.cover;return i}
-  i.src=a.cover_small||a.cover;if(a.cover_small&&a.cover!==a.cover_small){i.srcset=a.cover_small+' 320w, '+a.cover+' 640w';i.sizes='(max-width:600px) 100vw, 300px'}return i}
+  i.src=a.cover_small||a.cover;if(a.cover_small&&a.cover!==a.cover_small){i.srcset=a.cover_small+' 320w, '+a.cover+' 640w';i.sizes='(max-width:600px) 100vw, 300px'}i.onerror=()=>{i.onerror=null;i.removeAttribute('srcset');i.src=a.cover_small||a.cover};return i}
 if(aEl){let albums=[],cur=[],idx=0,shown=0;const PAGE=60,more=document.getElementById('more');const lb=document.getElementById('lb'),photos=document.getElementById('photos'),sec=document.getElementById('album'),msg=document.getElementById('msg');
   const el=(t,p={},...k)=>{const e=document.createElement(t);Object.assign(e,p);e.append(...k);return e};
-  const show=i=>{idx=(i+cur.length)%cur.length;const p=cur[idx];lb.querySelector('img').src=p.src;lb.querySelector('img').alt=p.cap;const q=lb.querySelector('p');q.textContent=p.cap;if(p.link)q.append(' · ',el('a',{href:p.link,target:'_blank',rel:'noopener noreferrer'},'Flickr'));if(!lb.open)lb.showModal()};
+  const show=i=>{idx=(i+cur.length)%cur.length;const p=cur[idx],im=lb.querySelector('img'),k=idx;im.alt=p.cap;im.onerror=()=>{im.onerror=null;if(p.thumbSmall&&idx===k)im.src=p.thumbSmall};im.src=p.thumb||p.src;if(p.src!==p.thumb){const big=new Image();big.onload=()=>{if(idx===k)im.src=p.src};big.src=p.src}const q=lb.querySelector('p');q.textContent=p.cap;if(p.link)q.append(' · ',el('a',{href:p.link,target:'_blank',rel:'noopener noreferrer'},'Flickr'));if(!lb.open)lb.showModal()};
   function render(){let id=location.hash.slice(1);try{id=decodeURIComponent(id)}catch(e){}const a=albums.find(x=>x.id===id);
     sec.hidden=!a;aEl.hidden=!!a;msg.textContent='';
     if(!a){document.title='갤러리 · 주은혜 교회';return}
     document.title=a.title+' · 주은혜 교회';document.getElementById('atitle').textContent=a.title+(a.title_en?' · '+a.title_en:'');
-    cur=a.photos.map(p=>{const c=p.caption||a.title;if(a.remote)return{src:p.url,thumb:p.thumb,thumbSmall:p.thumb_small,link:p.link,cap:c};const u='gallery/albums/'+a.id+'/'+p.file;return{src:u,thumb:u,cap:c}});const fl=document.getElementById('flink');fl.hidden=!a.link;if(a.link)fl.href=a.link;
+    const fileish=/^(kakaotalk|img|dsc|pxl|photo|image|screenshot|\d{6,})[\s_.-]?[\w .()-]*$/i;cur=a.photos.map(p=>{const c=(p.caption&&!fileish.test(p.caption.trim()))?p.caption:a.title;if(a.remote)return{src:p.url,thumb:p.thumb,thumbSmall:p.thumb_small,link:p.link,cap:c};const u='gallery/albums/'+a.id+'/'+p.file;return{src:u,thumb:u,cap:c}});const fl=document.getElementById('flink');fl.hidden=!a.link;if(a.link)fl.href=a.link;
     photos.replaceChildren();shown=0;addMore();window.scrollTo(0,0)}
-  function addMore(){const n=Math.min(shown+PAGE,cur.length);photos.append(...cur.slice(shown,n).map((p,k)=>{const i=shown+k,im=el('img',{src:p.thumbSmall||p.thumb,alt:p.cap,loading:'lazy'});if(p.thumbSmall&&p.thumb!==p.thumbSmall){im.srcset=p.thumbSmall+' 320w, '+p.thumb+' 640w';im.sizes='(max-width:600px) 50vw, 240px'}im.onclick=()=>show(i);return im}));shown=n;more.hidden=shown>=cur.length;more.textContent='더 보기 · Show more ('+(cur.length-shown)+')'}
+  function addMore(){const n=Math.min(shown+PAGE,cur.length);photos.append(...cur.slice(shown,n).map((p,k)=>{const i=shown+k,im=el('img',{src:p.thumbSmall||p.thumb,alt:p.cap,loading:'lazy'});if(p.thumbSmall&&p.thumb!==p.thumbSmall){im.srcset=p.thumbSmall+' 320w, '+p.thumb+' 640w';im.sizes='(max-width:600px) 50vw, 240px'}im.onerror=()=>{im.onerror=null;im.removeAttribute('srcset');im.src=p.thumbSmall||p.thumb};im.onclick=()=>show(i);return im}));shown=n;more.hidden=shown>=cur.length;more.textContent='더 보기 · Show more ('+(cur.length-shown)+')'}
   more.onclick=addMore;
   loadJSON('gallery/albums.json').then(list=>{albums=list=(Array.isArray(list)?list:[]).filter(a=>a&&typeof a.id==='string'&&Array.isArray(a.photos)&&a.photos.length);
     if(list.length)aEl.replaceChildren(...list.map(a=>{const l=el('a',{href:'#'+encodeURIComponent(a.id),className:'card album'},
