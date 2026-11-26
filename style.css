@@ -87,3 +87,13 @@ nav a small{font-size:.9rem;margin:0;text-align:center}
 @media(max-width:600px){.photos{grid-template-columns:repeat(2,1fr);gap:.4rem}}
 dialog#lb{max-width:96vw;max-height:96vh;border-radius:8px;overflow:hidden}dialog#lb::backdrop{background:rgba(0,0,0,.85)}
 dialog#lb img{max-width:96vw;max-height:72vh;width:auto;height:auto;object-fit:contain;background:#000}
+/* photo viewer: photo fills the screen; arrows and close sit on top of it; loading mark while the full-size photo arrives */
+dialog#lb{position:fixed;max-width:100vw;max-height:100vh;background:#000;border-radius:6px;overflow:hidden}
+dialog#lb img{max-width:98vw;max-height:calc(100vh - 56px)}
+dialog#lb p{margin:.4rem .6rem;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+dialog#lb .lbnav{position:absolute;inset:0 0 auto 0;height:calc(100% - 2.4rem);padding:0;pointer-events:none}
+dialog#lb .lbnav button{pointer-events:auto;position:absolute;background:rgba(0,0,0,.45);color:#fff;border:0;border-radius:50%;width:2.8rem;height:2.8rem;padding:0;font-size:1.5rem;line-height:1}
+dialog#lb #prev{left:.5rem;top:50%;transform:translateY(-50%)}dialog#lb #next{right:.5rem;top:50%;transform:translateY(-50%)}dialog#lb #close{right:.5rem;top:.5rem;font-size:1.2rem}
+dialog#lb .lbnote{display:none;color:#ddd;font-size:.85rem;text-align:center;padding:0 .5rem .4rem}dialog#lb.lowres .lbnote{display:block}
+dialog#lb.loading::after{content:"";position:absolute;left:50%;top:calc(50% - 1.2rem);width:2rem;height:2rem;margin:-1rem 0 0 -1rem;border:3px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
